@@ -1,0 +1,17 @@
+{
+    "framework": "mocha",
+    "src_files": [
+        "src/**/*.coffee",
+        "src/**/*.cjsx",
+        "src/**/*.mustache",
+        "test/*.coffee"
+    ],
+    "launchers": {
+        "node": {
+            "command":"DEBUG=test ./node_modules/.bin/mocha --harmony test/spec.coffee"
+        }
+    },
+    "launch_in_dev": [
+        "node"
+    ]
+}
