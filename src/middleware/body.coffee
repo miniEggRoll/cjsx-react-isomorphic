@@ -1,11 +1,17 @@
-Mustache = require 'mustache'
-fs       = require 'fs'
+_           = require 'underscore'
+Mustache    = require 'mustache'
+fs          = require 'fs'
 
-index = fs.readFileSync "#{__dirname}/../template/index.mustache", {encoding: 'utf8'}
+render = (path, model)->
+    (done)->
+        fs.readFile path, {encoding: 'utf8'}, (err, index)->
+            if err? then done err else done null, Mustache.render(index, model)
+
 
 module.exports = ->
     (next)->
-        {props, reactHTML} = @
+        {props, html} = @reactHTML
+        @throw 404 unless props? and html?
         json = JSON.stringify props
-        @body = Mustache.render index, {reactHTML, json}
+        @body = yield render "#{__dirname}/../index.mustache", {html, json}
         yield next

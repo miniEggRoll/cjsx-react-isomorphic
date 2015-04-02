@@ -1,12 +1,85 @@
-_       = require 'underscore'
-React   = require 'react'
+_           = require 'underscore'
+React       = require 'react'
+App         = require "#{__dirname}/App.cjsx"
+Restaurant  = require "#{__dirname}/Restaurant.cjsx"
+
+apps = [
+    {
+        key: 'ios'
+        src: 'https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg'
+        href: "https://itunes.apple.com/th/app/eztable-24hr-restaurant-reservation/id725489275?mt=8&uo=4"
+        target: 'itunes_store'
+        style: 
+            display:'inline-block'
+            overflow:'hidden'
+            background: 'url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png) no-repeat'
+            width:'135px'
+            height:'40px'
+    }
+    {
+        key: 'android'
+        src: 'https://developer.android.com/images/brand/en_generic_rgb_wo_45.png'
+        href: "https://play.google.com/store/apps/developer?id=EZTABLE+Ltd.&hl=zh_TW"
+        target: 'blank'
+        style: {}
+    }
+]
 
 Root = React.createClass {
+    componentWillReceiveProps: (nextProps)->
+        @setState @getInitialState.call @
+    getInitialState: ->
+        {restaurants, page, pageSize, locale} = @props
+        pageCount = Math.ceil(restaurants.length/pageSize)
+        restInfo = restaurants.slice pageSize*(page - 1), pageSize*page
+        
+        pagination = do =>
+            go = (idx)=>
+                =>
+                    @gotoPage idx
+            [Math.max(page-5, 1)...Math.min(pageCount, page+5)].map (idx)->
+                click = go idx
+                className = if idx is page then 'active' else ''
+                href = "./?page=#{idx}"
+                {idx, click, className, href}
+
+        lang = do =>
+            locale.list.map (l)->
+                {l, href: "./?lang=#{l}"}
+        {restInfo, pagination, lang, pageCount}
     getDefaultProps: ->
         {
             restaurants: []
+            page: 1
+            pageSize: 20
+            locale: 
+                list: []
+                selected: 'en_US'
         }
+    gotoPage: (page = 1)->
+        @setProps {page}
+    nextPage: ->
+        {pageCount} = @state
+        {page, restaurants, pageSize} = @props
+        @setProps {page: Math.floor(page + 1, pageCount)}
+    previousPage: ->
+        {page} = @props
+        @setProps {page: (page - 1) or 1}
     render: ->
+        {restInfo, pagination, lang, pageCount} = @state
+
+        restInfo = restInfo.map (r)->
+            <Restaurant key={r.id} {...r} />
+
+        appLink = apps.map (a)->
+            <App key={a.key} {...a} />
+
+        pagination = pagination.map ({click, className, href, idx})->
+            <li className={className} onClick={click} key={idx} ><a href={href}>{idx}</a></li>
+
+        lang = lang.map ({href, l})->
+            <li key={l} ><a href={href}>{l}</a></li>
+
         <div>
             <nav className="navbar" role="navigation">
                 <div className="container">
@@ -17,128 +90,41 @@ Root = React.createClass {
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                         </button>
-                        <a className="navbar-brand" href="index.html">Andia - a super cool design agency...</a>
+                        <a className="navbar-brand" href="#">EZTABLE</a>
                     </div>
                     <div className="collapse navbar-collapse" id="top-navbar-1">
                         <ul className="nav navbar-nav navbar-right">
-                            <li className="dropdown active">
+                            <li className="dropdown">
                                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000">
-                                    <i className="fa fa-home"></i><br/>Home <span className="caret"></span>
+                                    <i className="fa fa-globe"></i><br/>language <span className="caret"></span>
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-left" role="menu">
-                                    <li className="active"><a href="index.html">Home</a></li>
-                                    <li><a href="index-2.html">Home 2</a></li>
+                                    {lang}
                                 </ul>
-                            </li>
-                            <li>
-                                <a href="portfolio.html"><i className="fa fa-camera"></i><br/>Portfolio</a>
-                            </li>
-                            <li>
-                                <a href="#"><i className="fa fa-comments"></i><br/>Blog</a>
-                            </li>
-                            <li>
-                                <a href="services.html"><i className="fa fa-tasks"></i><br/>Services</a>
-                            </li>
-                            <li>
-                                <a href="about.html"><i className="fa fa-user"></i><br/>About</a>
-                            </li>
-                            <li>
-                                <a href="contact.html"><i className="fa fa-envelope"></i><br/>Contact</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
 
-            <div className="slider-container">
+            <div className="work-container">
                 <div className="container">
                     <div className="row">
-                        <div className="col-sm-10 col-sm-offset-1 slider">
-                            <div className="flexslider">
-                                <ul className="slides">
-                                    <li data-thumb="assets/img/slider/1.jpg">
-                                        <img src="assets/img/slider/1.jpg"/>
-                                        <div className="flex-caption">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </li>
-                                    <li data-thumb="assets/img/slider/2.jpg">
-                                        <img src="assets/img/slider/2.jpg"/>
-                                        <div className="flex-caption">
-                                            Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit 
-                                            lobortis nisl ut aliquip ex ea commodo consequat.
-                                        </div>
-                                    </li>
-                                    <li data-thumb="assets/img/slider/3.jpg">
-                                        <img src="assets/img/slider/3.jpg" />
-                                        <div className="flex-caption">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </li>
-                                    <li data-thumb="assets/img/slider/4.jpg">
-                                        <img src="assets/img/slider/4.jpg"/>
-                                        <div className="flex-caption">
-                                            Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit 
-                                            lobortis nisl ut aliquip ex ea commodo consequat.
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                        <div className="col-sm-12 work-title wow fadeIn">
+                            <h2>Our Restaurants</h2>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div className="presentation-container">
-                <div className="container">
                     <div className="row">
-                        <div className="col-sm-12 wow fadeInLeftBig">
-                            <h1>We are <span className="violet">Andia</span>, a super cool design agency.</h1>
-                            <p>We design beautiful websites, logos and prints. Your project is safe with us.</p>
-                        </div>
+                        {restInfo}
                     </div>
-                </div>
-            </div>
-
-            <div className="services-container">
-                <div className="container">
                     <div className="row">
-                        <div className="col-sm-3">
-                            <div className="service wow fadeInUp">
-                                <div className="service-icon"><i className="fa fa-eye"></i></div>
-                                <h3>Beautiful Websites</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et...</p>
-                                <a className="big-link-1" href="services.html">Read more</a>
-                            </div>
-                        </div>
-                        <div className="col-sm-3">
-                            <div className="service wow fadeInDown">
-                                <div className="service-icon"><i className="fa fa-table"></i></div>
-                                <h3>Responsive Layout</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et...</p>
-                                <a className="big-link-1" href="services.html">Read more</a>
-                            </div>
-                        </div>
-                        <div className="col-sm-3">
-                            <div className="service wow fadeInUp">
-                                <div className="service-icon"><i className="fa fa-magic"></i></div>
-                                <h3>Awesome Logos</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et...</p>
-                                <a className="big-link-1" href="services.html">Read more</a>
-                            </div>
-                        </div>
-                        <div className="col-sm-3">
-                            <div className="service wow fadeInDown">
-                                <div className="service-icon"><i className="fa fa-print"></i></div>
-                                <h3>High Res Prints</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et...</p>
-                                <a className="big-link-1" href="services.html">Read more</a>
-                            </div>
-                        </div>
+                        <nav>
+                            <ul className="pagination">
+                                <li onClick={this.previousPage} ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                {pagination}
+                                <li onClick={this.nextPage} ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -147,138 +133,11 @@ Root = React.createClass {
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-12 work-title wow fadeIn">
-                            <h2>Our Latest Work</h2>
+                            <h2>Our Apps</h2>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <div className="work wow fadeInUp">
-                                <img src="assets/img/portfolio/work1.jpg" alt="Lorem Website" data-at2x="assets/img/portfolio/work1.jpg"/>
-                                <h3>Lorem Website</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...</p>
-                                <div className="work-bottom">
-                                    <a className="big-link-2 view-work" href="assets/img/portfolio/work1.jpg"><i className="fa fa-search"></i></a>
-                                    <a className="big-link-2" href="portfolio.html"><i className="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-3">
-                            <div className="work wow fadeInDown">
-                                <img src="assets/img/portfolio/work2.jpg" alt="Ipsum Logo" data-at2x="assets/img/portfolio/work2.jpg"/>
-                                <h3>Ipsum Logo</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...</p>
-                                <div className="work-bottom">
-                                    <a className="big-link-2 view-work" href="assets/img/portfolio/work2.jpg"><i className="fa fa-search"></i></a>
-                                    <a className="big-link-2" href="portfolio.html"><i className="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-3">
-                            <div className="work wow fadeInUp">
-                                <img src="assets/img/portfolio/work3.jpg" alt="Dolor Prints" data-at2x="assets/img/portfolio/work3.jpg"/>
-                                <h3>Dolor Prints</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...</p>
-                                <div className="work-bottom">
-                                    <a className="big-link-2 view-work" href="assets/img/portfolio/work3.jpg"><i className="fa fa-search"></i></a>
-                                    <a className="big-link-2" href="portfolio.html"><i className="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-3">
-                            <div className="work wow fadeInDown">
-                                <img src="assets/img/portfolio/work4.jpg" alt="Sit Amet Website" data-at2x="assets/img/portfolio/work4.jpg"/>
-                                <h3>Sit Amet Website</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...</p>
-                                <div className="work-bottom">
-                                    <a className="big-link-2 view-work" href="assets/img/portfolio/work4.jpg"><i className="fa fa-search"></i></a>
-                                    <a className="big-link-2" href="portfolio.html"><i className="fa fa-link"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="testimonials-container">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-12 testimonials-title wow fadeIn">
-                            <h2>Testimonials</h2>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-10 col-sm-offset-1 testimonial-list">
-                            <div role="tabpanel">
-                                <div className="tab-content">
-                                    <div role="tabpanel" className="tab-pane fade in active" id="tab1">
-                                        <div className="testimonial-image">
-                                            <img src="assets/img/testimonials/1.jpg" alt="" data-at2x="assets/img/testimonials/1.jpg"/>
-                                        </div>
-                                        <div className="testimonial-text">
-                                            <p>
-                                                "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                                Lorem ipsum dolor sit amet, consectetur..."<br/>
-                                                <a href="#">Lorem Ipsum, dolor.co.uk</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div role="tabpanel" className="tab-pane fade" id="tab2">
-                                        <div className="testimonial-image">
-                                            <img src="assets/img/testimonials/2.jpg" alt="" data-at2x="assets/img/testimonials/2.jpg"/>
-                                        </div>
-                                        <div className="testimonial-text">
-                                            <p>
-                                                "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip 
-                                                ex ea commodo consequat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit 
-                                                lobortis nisl ut aliquip ex ea commodo consequat..."<br/>
-                                                <a href="#">Minim Veniam, nostrud.com</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div role="tabpanel" className="tab-pane fade" id="tab3">
-                                        <div className="testimonial-image">
-                                            <img src="assets/img/testimonials/3.jpg" alt="" data-at2x="assets/img/testimonials/3.jpg"/>
-                                        </div>
-                                        <div className="testimonial-text">
-                                            <p>
-                                                "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et. 
-                                                Lorem ipsum dolor sit amet, consectetur..."<br/>
-                                                <a href="#">Lorem Ipsum, dolor.co.uk</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div role="tabpanel" className="tab-pane fade" id="tab4">
-                                        <div className="testimonial-image">
-                                            <img src="assets/img/testimonials/1.jpg" alt="" data-at2x="assets/img/testimonials/1.jpg"/>
-                                        </div>
-                                        <div className="testimonial-text">
-                                            <p>
-                                                "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip 
-                                                ex ea commodo consequat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit 
-                                                lobortis nisl ut aliquip ex ea commodo consequat..."<br/>
-                                                <a href="#">Minim Veniam, nostrud.com</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <ul className="nav nav-tabs" role="tablist">
-                                    <li role="presentation" className="active">
-                                        <a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab"></a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab"></a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab"></a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a href="#tab4" aria-controls="tab4" role="tab" data-toggle="tab"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                    <div className="row col-md-6 col-md-offset-3" >
+                        {appLink}
                     </div>
                 </div>
             </div>
@@ -294,34 +153,6 @@ Root = React.createClass {
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et.
                                 </p>
                                 <p><a href="about.html">Read more...</a></p>
-                            </div>
-                        </div>
-                        <div className="col-sm-3 footer-box wow fadeInDown">
-                            <h4>Email Updates</h4>
-                            <div className="footer-box-text footer-box-text-subscribe">
-                                <p>Enter your email and you'll be one of the first to get new updates:</p>
-                                <form role="form" action="assets/subscribe.php" method="post">
-                                    <div className="form-group">
-                                        <label className="sr-only" for="subscribe-email">Email address</label>
-                                        <input type="text" name="email" placeholder="Email..." className="subscribe-email" id="subscribe-email"/>
-                                    </div>
-                                    <button type="submit" className="btn">Subscribe</button>
-                                </form>
-                                <p className="success-message"></p>
-                                <p className="error-message"></p>
-                            </div>
-                        </div>
-                        <div className="col-sm-3 footer-box wow fadeInUp">
-                            <h4>Flickr Photos</h4>
-                            <div className="footer-box-text flickr-feed"></div>
-                        </div>
-                        <div className="col-sm-3 footer-box wow fadeInDown">
-                            <h4>Contact Us</h4>
-                            <div className="footer-box-text footer-box-text-contact">
-                                <p><i className="fa fa-map-marker"></i> Address: Via Principe Amedeo 9, 10100, Torino, TO, Italy</p>
-                                <p><i className="fa fa-phone"></i> Phone: 0039 333 12 68 347</p>
-                                <p><i className="fa fa-user"></i> Skype: Andia_Agency</p>
-                                <p><i className="fa fa-envelope"></i> Email: <a href="">contact@andia.co.uk</a></p>
                             </div>
                         </div>
                     </div>

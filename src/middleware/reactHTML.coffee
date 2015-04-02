@@ -1,8 +1,12 @@
-React   = require 'react'
-root    = require "#{__dirname}/../component/root"
+_           = require 'underscore'
+React       = require 'react'
+rootPath    = "#{__dirname}/../component"
 
-module.exports = ->
+module.exports = (pageSize = 20)->
     (next)->
-        {props} = @
-        @reactHTML = React.renderToString React.createElement(root, props)
+        {Root} = require rootPath
+        {model} = @
+        props = _.extend {}, model, {pageSize}
+        html = React.renderToString React.createElement(Root, props)
+        @reactHTML = {props, html}
         yield next
