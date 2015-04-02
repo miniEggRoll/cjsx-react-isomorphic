@@ -4,11 +4,11 @@
         "src/**/*.coffee",
         "src/**/*.cjsx",
         "src/**/*.mustache",
-        "test/*.coffee"
+        "test/*"
     ],
     "launchers": {
         "node": {
-            "command":"DEBUG=test ./node_modules/.bin/mocha --harmony test/spec.coffee"
+            "command":"DEBUG=test ./node_modules/.bin/mocha --harmony test/spec.cjsx"
         }
     },
     "launch_in_dev": [

@@ -1,14 +1,16 @@
 debug       = require('debug')('test')
 _           = require 'underscore'
 cheerio     = require 'cheerio'
+jsdom       = require('jsdom').jsdom
 {assert}    = require 'chai'
 koa         = require 'koa'
 request     = require 'supertest'
-reactTool   = require 'react-tools'
+React       = require 'react/addons'
 middleware  = require "#{__dirname}/../src/middleware"
 restaurant  = require "#{__dirname}/../src/restaurant"
 component   = require "#{__dirname}/../src/component"
 
+{TestUtils} = React.addons
 {App, Restaurant, Root} = component
 
 describe 'middleware', ->
@@ -173,10 +175,23 @@ describe 'restaurants', ->
             assert.isNumber id
 
 describe 'component', ->
-    describe 'root', ->
-        it 'successfully rendered'
+    global.document = jsdom '<html><head></head><body></body></html>'
+    global.window = document.defaultView
+    global.navigator = global.window.navigator
 
+    describe 'root', ->
+        it 'successfully rendered', ->
+            props = {}
+            component = TestUtils.renderIntoDocument <Root {...props} />
+            assert.ok TestUtils.isCompositeComponentWithType(component, Root)
     describe 'app', ->
-        it 'successfully rendered'
+        it 'successfully rendered', ->
+            props = {}
+            component = TestUtils.renderIntoDocument <App {...props} />
+            assert.ok TestUtils.isCompositeComponentWithType(component, App)
+
     describe 'restaurant', ->
-        it 'successfully rendered'
+        it 'successfully rendered', ->
+            props = {}
+            component = TestUtils.renderIntoDocument <Restaurant {...props} />
+            assert.ok TestUtils.isCompositeComponentWithType(component, Restaurant)
