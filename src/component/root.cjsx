@@ -26,26 +26,23 @@ apps = [
 ]
 
 Root = React.createClass {
-    componentWillReceiveProps: (nextProps)->
-        @setState @getInitialState.call @
+    componentWillReceiveProps: (props)->
+        @setState @getInitialState.call {props}
     getInitialState: ->
         {restaurants, page, pageSize, locale} = @props
         pageCount = Math.ceil(restaurants.length/pageSize)
         restInfo = restaurants.slice pageSize*(page - 1), pageSize*page
         
         pagination = do =>
-            go = (idx)=>
-                =>
-                    @gotoPage idx
             [Math.max(page-5, 1)...Math.min(pageCount, page+5)].map (idx)->
-                click = go idx
                 className = if idx is page then 'active' else ''
                 href = "./?page=#{idx}"
-                {idx, click, className, href}
+                {idx, className, href}
 
         lang = do =>
             locale.list.map (l)->
-                {l, href: "./?lang=#{l}"}
+                href = "./?lang=#{l}"
+                {l, href}
         {restInfo, pagination, lang, pageCount}
     getDefaultProps: ->
         {
@@ -74,8 +71,10 @@ Root = React.createClass {
         appLink = apps.map (a)->
             <App key={a.key} {...a} />
 
-        pagination = pagination.map ({click, className, href, idx})->
-            <li className={className} onClick={click} key={idx} ><a href={href}>{idx}</a></li>
+        pagination = pagination.map ({className, href, idx})=>
+            click = =>
+                @gotoPage idx
+            <li className={className} onClick={click} key={idx} ><a className="preventNav" href={href}>{idx}</a></li>
 
         lang = lang.map ({href, l})->
             <li key={l} ><a href={href}>{l}</a></li>
