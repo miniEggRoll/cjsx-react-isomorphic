@@ -10,8 +10,8 @@ render = (path, model)->
 
 module.exports = ->
     (next)->
-        {props, html} = @reactHTML
-        @throw 404 unless props? and html?
-        json = JSON.stringify props
-        @body = yield render "#{__dirname}/../index.mustache", {html, json}
+        {locale} = @
+        {html} = @reactHTML
+        @throw 404 unless html?
+        @body = yield render "#{__dirname}/../index.mustache", {html, locale}
         yield next

@@ -11,17 +11,15 @@ restaurant  = require "#{__dirname}/../src/restaurant"
 component   = require "#{__dirname}/../src/component"
 
 {TestUtils} = React.addons
-{App, Restaurant, Root} = component
+{App, Restaurant, Route} = component
 
 describe 'middleware', ->
     describe 'body', ->
         it 'render response body', (done)->
             template = '<p>hello world</p>'
-            prop = {foo: 'bar'}
             app = koa()
             app.use (next)->
                 @reactHTML = 
-                    props: prop
                     html: template
                 yield next
             app.use middleware.body()
@@ -33,29 +31,13 @@ describe 'middleware', ->
             .end (err, res)->
                 $ = cheerio.load res.text
                 injected = $('#wrapper').html()
-                script = $('#props').html()
                 assert.equal template, injected
-                assert.match script, new RegExp("var props = #{JSON.stringify prop}")
                 do done
-        
-        it 'throws if no props', (done)->
-            template = '<p>hello world</p>'
-            app = koa()
-            app.use (next)->
-                @reactHTML = 
-                    html: template
-                yield next
-            app.use middleware.body()
-
-            request(app.callback())
-            .get '/'
-            .expect 404, done
 
         it 'throws if no html', (done)->
             app = koa()
-            props = {foo: 'bar'}
             app.use (next)->
-                @reactHTML = {props}
+                @reactHTML = {}
                 yield next
             app.use middleware.body()
 
@@ -70,8 +52,7 @@ describe 'middleware', ->
             app = koa()
             app.use middleware.locale localeKey
             app.use (next)->
-                assert.isArray @locale.list
-                assert.equal defaultLocale, @locale.selected
+                assert.equal defaultLocale, @locale
                 yield next
 
             request(app.callback())
@@ -85,8 +66,7 @@ describe 'middleware', ->
             app = koa()
             app.use middleware.locale localeKey
             app.use (next)->
-                assert.isArray @locale.list
-                assert.equal locale, @locale.selected
+                assert.equal locale, @locale
                 yield next
 
             request(app.callback())
@@ -100,8 +80,7 @@ describe 'middleware', ->
             app = koa()
             app.use middleware.locale localeKey
             app.use (next)->
-                assert.isArray @locale.list
-                assert.equal locale, @locale.selected
+                assert.equal locale, @locale
                 yield next
 
             agent = request.agent app.callback()
@@ -112,52 +91,13 @@ describe 'middleware', ->
                 .expect 'Set-Cookie', new RegExp("#{localeKey}=#{locale}")
                 .expect 404, done
 
-    describe 'model', ->
-        it 'route / to root', (done)->
-            page = 3
-            locale = {selected: 'test'}
-            app = koa()
-            app.use (next)->
-                @locale = locale
-                yield next
-            app.use middleware.model()
-            app.use (next)->
-                assert.isObject @model
-                assert.isArray @model.restaurants
-                @model.restaurants.forEach (r)->
-                    assert.isString r.country
-                    assert.isString r.locale
-                    assert.isString r.name
-                    assert.isString r.intro
-                    assert.isString r.thumb
-                    assert.isNumber r.id
-                    
-                assert.equal locale, @model.locale
-                assert.equal page, @model.page
-                yield next
-
-            request app.callback()
-            .get "/?page=#{page}"
-            .expect 404, done
-
     describe 'reactHTML', ->
         it 'render root component', (done)->
-            pageSize = 20
-            model = 
-                restaurants: []
-                locale: 
-                    list: []
-                    selected: 'en_US'
-                page: 1
             app = koa()
-            app.use (next)->
-                @model = model
-                yield next
-            app.use middleware.reactHTML pageSize
+            app.use middleware.reactHTML()
             app.use (next)->
                 assert.isObject @reactHTML
                 assert.isString @reactHTML.html
-                assert.deepEqual @reactHTML.props, _.extend({}, model, {pageSize})
                 yield next
 
             request(app.callback())
@@ -180,10 +120,10 @@ describe 'component', ->
     global.navigator = global.window.navigator
 
     describe 'root', ->
-        it 'successfully rendered', ->
-            props = {}
-            component = TestUtils.renderIntoDocument <Root {...props} />
-            assert.ok TestUtils.isCompositeComponentWithType(component, Root)
+        # it 'successfully rendered', ->
+        #     props = {}
+        #     component = TestUtils.renderIntoDocument <Route {...props} />
+        #     assert.ok TestUtils.isCompositeComponentWithType(component, Route)
     describe 'app', ->
         it 'successfully rendered', ->
             props = {}

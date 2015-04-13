@@ -1,0 +1,5 @@
+exports = {
+    browser: {
+      fs: "empty"
+    }
+}

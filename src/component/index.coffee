@@ -1,8 +1,6 @@
-path = require 'path'
-glob = require 'glob'
-
-glob.sync "#{__dirname}/*"
-.filter (fileName)-> fileName isnt __filename
-.forEach (fileName)-> 
-    baseName = path.basename fileName, path.extname(fileName)
-    exports[baseName] = require fileName
+module.exports = 
+    App: require "#{__dirname}/App.cjsx"
+    Page: require "#{__dirname}/Page.cjsx"
+    Restaurant: require "#{__dirname}/Restaurant.cjsx"
+    Root: require "#{__dirname}/Root.cjsx"
+    Route: require "#{__dirname}/Route.cjsx"

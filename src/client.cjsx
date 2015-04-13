@@ -1,7 +1,19 @@
-Root    = require "#{__dirname}/component/root.cjsx"
-React   = require 'react'
-$       = require 'jquery/dist/jquery.min'
+React = require 'react'
+{routeHandler, wait} = require "#{__dirname}/util/index.cjsx"
+Dispatcher  = require "#{__dirname}/dispatcher/index.coffee"
+{ActionType} = require "#{__dirname}/constant/index.coffee"
 
-React.render <Root {...props} />, document.getElementById 'wrapper'
 
-$(document).on 'click', 'a.preventNav', -> false
+wrapper = document.getElementById 'wrapper'
+{locale} = global
+
+flux = Dispatcher {locale}
+flux.dispatcher.register (action)->
+    switch action.type
+        when ActionType.ROUTE
+            routeHandler().then ({Handler, state})->
+                wait flux, state, Handler, locale
+            .then ({component})->
+                React.render component, wrapper
+
+flux.action.route()
