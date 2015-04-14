@@ -36,6 +36,7 @@ Page = React.createClass {
                 href = @context.router.makePath to, params
                 @context.router.transitionTo href
                 @props.flux.action.route()
+                false
 
             <li><Link to={to} params={params} onClick={delegate} >{params.page}</Link></li>
 

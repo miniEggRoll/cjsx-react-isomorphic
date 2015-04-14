@@ -1,7 +1,5 @@
-http        = require 'http'
 url         = require 'url'
 request     = require 'superagent'
-qs          = require 'querystring'
 RSVP        = require 'rsvp'
 React       = require 'react'
 Router      = require 'react-router'
@@ -26,22 +24,15 @@ module.exports =
 
     routeHandler: (path)->
         new RSVP.Promise (resolve, reject)->
-            try
-                if path?
-                    Router.run Route, path, (Handler, state)->
-                        resolve {state, Handler}
-                else
-                    Router.run Route, Router.HistoryLocation, (Handler, state)->
-                        resolve {Handler, state}
-            catch e
-                reject e
-
-    wait: (flux, state, Handler, locale)->
+            p = if path? then path else Router.HistoryLocation
+            Router.run Route, p, (Handler, state)->
+                resolve {Handler, state}
+            
+    wait: (flux, state)->
         {store, action} = flux
         new RSVP.Promise (resolve, reject)->
             callback = ->
                 store.restaurantStore.removeChangeListener callback
-                resolve {component, Handler}
+                do resolve
             store.restaurantStore.addChangeListener callback
-            component = <Handler {...state} locale={locale} flux={flux} />
             action.navPage state.params

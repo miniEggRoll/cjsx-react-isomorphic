@@ -1,4 +1,4 @@
-util            = require "#{__dirname}/../util/index.cjsx"
+util            = require "#{__dirname}/../util/index.coffee"
 {ActionType}    = require "#{__dirname}/../constant/index.coffee"
 
 module.exports = (dispatcher, locale)->

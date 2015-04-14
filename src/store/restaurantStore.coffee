@@ -1,7 +1,7 @@
 _               = require 'underscore'
 {EventEmitter}  = require 'events'
 
-util            = require "#{__dirname}/../util/index.cjsx"
+util            = require "#{__dirname}/../util/index.coffee"
 {ActionType}    = require "#{__dirname}/../constant/index.coffee"
 
 CHANGE_EVENT = 'change'

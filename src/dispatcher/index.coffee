@@ -1,6 +1,5 @@
-Action           = require "#{__dirname}/../action/index.coffee"
+Action          = require "#{__dirname}/../action/index.coffee"
 Store           = require "#{__dirname}/../store/index.coffee"
-{Route}         = require "#{__dirname}/../component/index.coffee"
 {Dispatcher}    = require 'flux'
 
 module.exports = ({locale})->
