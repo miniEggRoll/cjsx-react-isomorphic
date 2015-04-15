@@ -41,6 +41,8 @@ Page = React.createClass {
             <Restaurant key={r.id} {...r} />
 
         nav = [prevPage, nextPage].map (params, idx)=>
+            return if idx is 0 and params.page is 0
+            arrow = if idx is 0 then '&larr;' else '&rarr;'
             to = 'list'
             href = @context.router.makePath to, params
 
@@ -48,7 +50,7 @@ Page = React.createClass {
                 @context.router.transitionTo href
                 @props.flux.action.route()
 
-            <li key={href} ><Link to={to} params={params} onClick={delegate} >{params.page}</Link></li>
+            <li key={href} ><Link to={to} params={params} onClick={delegate} ><span aria-hidden="true" dangerouslySetInnerHTML={{__html: arrow}}></span></Link></li>
 
         <div>
             <div className="row">
@@ -61,7 +63,7 @@ Page = React.createClass {
             </div>
             <div className="row">
                 <nav>
-                    <ul className="pagination">
+                    <ul className="pager">
                         {nav}
                     </ul>
                 </nav>
