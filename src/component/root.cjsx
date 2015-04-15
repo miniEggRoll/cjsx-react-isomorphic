@@ -1,7 +1,7 @@
 React       = require 'react'
 Router      = require 'react-router'
 
-{Route, RouteHandler, Link} = Router
+{RouteHandler} = Router
 
 Root = React.createClass {
     render: ->

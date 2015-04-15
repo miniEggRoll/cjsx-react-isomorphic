@@ -1,7 +1,6 @@
 React       = require 'react'
 Router      = require 'react-router'
 Restaurant  = require "#{__dirname}/Restaurant.cjsx"
-action      = require "#{__dirname}/../action/index.coffee"
 {getRestaurantByPage}    = require "#{__dirname}/../util/index.coffee"
 
 {Link} = Router

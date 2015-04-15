@@ -1,10 +1,10 @@
 React   = require 'react'
 Router  = require 'react-router'
 RSVP    = require 'rsvp'
+{wait}  = require "#{__dirname}/util/index.coffee"
 Dispatcher      = require "#{__dirname}/dispatcher/index.coffee"
 {ActionType}    = require "#{__dirname}/constant/index.coffee"
 {Route}         = require "#{__dirname}/component/index.coffee"
-{routeHandler, wait} = require "#{__dirname}/util/index.coffee"
 
 wrapper = document.getElementById 'wrapper'
 {locale} = global

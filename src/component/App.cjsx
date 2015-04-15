@@ -1,4 +1,3 @@
-_       = require 'underscore'
 React   = require 'react'
 
 App = React.createClass {

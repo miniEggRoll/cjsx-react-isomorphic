@@ -2,9 +2,6 @@ _           = require 'underscore'
 url         = require 'url'
 request     = require 'superagent'
 RSVP        = require 'rsvp'
-React       = require 'react'
-Router      = require 'react-router'
-{assert}    = require 'chai'
 
 pageSize = 8
 
@@ -26,7 +23,6 @@ module.exports =
                 if err? then reject err else resolve res.body.restaurants[0]
 
     getRestaurantByPage: ({country, page, locale, filter})->
-        assert.isNumber page
         reqCount = Math.floor(pageSize/10) + 1
 
         promises = _.chain reqCount
