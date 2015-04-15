@@ -11,7 +11,7 @@ RestaurantList    = require "#{__dirname}/RestaurantList.cjsx"
 routes = 
     <Route name="root" path="/" handler={Root} >
         <Route name="country" path="country/:country" handler={RestaurantList} >
-            <Route name="list" path="page/:page" handler={List} />
+            <Route name="list" path="?:page?" handler={List} />
         </Route>
         <Route name="detail" path="restaurant/:id" handler={Detail} />
     </Route>

@@ -12,7 +12,6 @@ Page = React.createClass {
         fetchData: (flux, state)->
             {locale} = flux
             {page, country} = state.params
-            page = +page
             getRestaurantByPage {page, country, locale}
             .then (raws)->
                 flux.store.restaurantStore.addRestaurantsByPage raws, page
@@ -29,8 +28,6 @@ Page = React.createClass {
     getInitialState: ->
         {params, flux} = @props
         {page, country} = params
-        page = +page
-
         dictionary = flux.store.localeStore.translate keys, flux.locale
 
         restInfo = flux.store.restaurantStore.getAllForPage page, country

@@ -15,6 +15,8 @@ flux.dispatcher.register (action)->
         when ActionType.ROUTE
             new RSVP.Promise (resolve, reject)->
                 Router.run Route, Router.HistoryLocation, (Handler, state)->
+                    state.params.page ?= 1
+                    state.params.page = +state.params.page
                     resolve {Handler, state}
             .then ({Handler, state})->
                 wait(flux, state).then ->

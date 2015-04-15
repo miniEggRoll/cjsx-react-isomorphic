@@ -12,6 +12,8 @@ module.exports = ->
         try
             {Handler, state} = yield (done)=>
                 Router.run Route, @path, (Handler, state)->
+                    state.params.page ?= 1
+                    state.params.page = +state.params.page
                     done null, {Handler, state}
             yield wait flux, state
         catch e
