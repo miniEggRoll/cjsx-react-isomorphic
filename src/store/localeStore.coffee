@@ -39,7 +39,7 @@ lookup = (key, locale)->
 dictionary = 
     location: 
         en_US: 'Location'
-    adderss: 
+    address: 
         en_US: 'Address'
     transportation:
         en_US: 'Transportation'

@@ -4,7 +4,7 @@ React   = require 'react'
 
 keys = [
     'Location'
-    'Adderss'
+    'Address'
     'Transportation'
     'Promotion'
     'Cuisine'
