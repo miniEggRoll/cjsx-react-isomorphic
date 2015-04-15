@@ -1,0 +1,184 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Roboto", Helvetica, "Microsoft JhengHei", Arial, Verdana, sans-serif;
+  color: #333;
+  background: transparent;
+}
+
+body {
+  background: #ededed;
+}
+
+a, a:link, a:hover, a:active, a:visited {
+  color: #000;
+  text-decoration: none;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #fff;
+}
+
+.header {
+  overflow: hidden;
+  position: relative;
+}
+.header .nav-left-icon {
+  float: left;
+  margin: 6px 0 0 10px;
+}
+.header .icon-img {
+  width: 40px;
+  margin: 0 16px;
+  float: left;
+}
+.header .icon-img img {
+  width: 100%;
+  display: block;
+}
+.header .nav-link {
+  display: inline-block;
+  padding: 20px 0;
+}
+.header .nav-link-word {
+  display: inline-block;
+  margin-top: 3px;
+}
+.header .app-link-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.header .install-button {
+  position: absolute;
+  top: 30%;
+  right: 20px;
+  color: #68ade7;
+  background: #fff;
+  border: 1px solid #68ade7;
+  padding: 7px 12px;
+  font-size: 1.1rem;
+  display: inline-block;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-transition: 0.3s;
+  -o-transition: 0.3s;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+.header .install-button:hover, .header .install-button:active {
+  background: #68ade7;
+  color: #fff;
+}
+
+.main-section {
+  text-align: center;
+}
+.main-section .restaurant-img {
+  width: 100%;
+  display: block;
+}
+.main-section h1.restaurant-name {
+  text-align: left;
+  padding: 0;
+  margin: 16px 10px;
+}
+.main-section .restaurant-highlight {
+  color: #f04e2f;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 12px 5px;
+  margin: 16px auto;
+  width: 85%;
+  max-width: 500px;
+}
+.main-section .booknow-button {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 10px 32px;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #fff;
+  background: #f04e2f;
+  border: 1px solid #f04e2f;
+  -moz-transition: 0.3s;
+  -o-transition: 0.3s;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+.main-section .booknow-button:hover, .main-section .booknow-button:active {
+  background: #fff;
+  color: #f04e2f;
+}
+
+.detail-section {
+  margin: 0;
+}
+.detail-section h2.title {
+  margin: 0;
+  padding: 8px 10px;
+  background: #ddd;
+  font-size: 1.1rem;
+}
+.detail-section .detail-item {
+  padding: 6px 10px;
+}
+.detail-section .detail-item:not(:last-child) {
+  border-bottom: 1px solid #ededed;
+}
+.detail-section .subtitle {
+  color: #aaa;
+  margin: 4px 0;
+}
+.detail-section .content {
+  margin: 8px 0;
+}
+.detail-section .link {
+  color: #68ade7;
+}
+
+.footer {
+  text-align: center;
+  background: transparent;
+  padding: 10px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+.footer img {
+  width: 100px;
+}
+
+@media screen and (max-width: 560px) {
+  .header .icon-img {
+    margin: 0 8px;
+  }
+  .header .nav-link-word {
+    margin-top: 0;
+  }
+  .header .install-button {
+    font-size: 1rem;
+    right: 10px;
+    padding: 8px 10px;
+  }
+
+  .main-section .booknow-button {
+    padding: 10px 0;
+    width: 80%;
+  }
+
+  .detail-section .link {
+    display: block;
+  }
+
+  .footer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}

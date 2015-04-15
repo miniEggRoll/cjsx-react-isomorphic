@@ -10,8 +10,8 @@ render = (path, model)->
 
 module.exports = ->
     (next)->
-        {locale} = @
+        {style, locale} = @
         {html} = @reactHTML
         @throw 404 unless html?
-        @body = yield render "#{__dirname}/../index.mustache", {html, locale}
+        @body = yield render "#{__dirname}/../index.mustache", {html, locale, style}
         yield next

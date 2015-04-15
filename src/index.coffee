@@ -3,6 +3,7 @@ koa         = require 'koa'
 statics     = require 'koa-static'
 locale      = require "#{__dirname}/middleware/locale"
 body        = require "#{__dirname}/middleware/body"
+style       = require "#{__dirname}/middleware/style"
 reactHTML   = require "#{__dirname}/middleware/reactHTML"
 
 app = koa()
@@ -10,6 +11,7 @@ app = koa()
 app.use statics "#{__dirname}/../dist"
 app.use locale 'locale'
 app.use reactHTML()
+app.use style()
 app.use body()
 
 app.listen 8080, ->

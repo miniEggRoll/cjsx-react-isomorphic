@@ -6,10 +6,12 @@ module.exports = ({locale})->
     dispatcher = new Dispatcher()
 
     {
+        locale: locale
         dispatcher: dispatcher
         action: Action dispatcher, locale
         store: 
             appStore: Store.appStore dispatcher
             localeStore: Store.localeStore dispatcher
             restaurantStore: Store.restaurantStore dispatcher
+            attrStore: Store.attrStore dispatcher
     }

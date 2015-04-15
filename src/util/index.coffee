@@ -1,38 +1,67 @@
+_           = require 'underscore'
 url         = require 'url'
 request     = require 'superagent'
 RSVP        = require 'rsvp'
 React       = require 'react'
 Router      = require 'react-router'
-{Route}     = require "#{__dirname}/../component/index.coffee"
+{assert}    = require 'chai'
+
+pageSize = 8
 
 module.exports = 
-    getRestaurantByPage: ({country, start, locale})->
+    getRestaurantById: ({id, locale})->
         href = url.format 
             protocol: 'http'
             hostname: 'api.eztable.com'
             pathname: '/v3/restaurants'
             query: 
-                fq: "country:#{country}"
+                fq: "id:#{id}"
                 locale: locale
-                start: start
+                start: 0
 
         new RSVP.Promise (resolve, reject)->
             request
             .get href
             .end (err, res)->
-                if err? then reject err else resolve res.body.restaurants
+                if err? then reject err else resolve res.body.restaurants[0]
 
-    routeHandler: (path)->
-        new RSVP.Promise (resolve, reject)->
-            p = if path? then path else Router.HistoryLocation
-            Router.run Route, p, (Handler, state)->
-                resolve {Handler, state}
-            
+    getRestaurantByPage: ({country, page, locale, filter})->
+        assert.isNumber page
+        reqCount = Math.floor(pageSize/10) + 1
+
+        promises = _.chain reqCount
+        .range()
+        .map (idx)->
+            start = (page-1)*pageSize + 10*idx
+            href = url.format 
+                protocol: 'http'
+                hostname: 'api.eztable.com'
+                pathname: '/v3/restaurants'
+                query: 
+                    fq: "country:#{country}"
+                    locale: locale
+                    start: start
+
+            new RSVP.Promise (resolve, reject)->
+                request
+                .get href
+                .end (err, res)->
+                    if err? then reject err else resolve res.body.restaurants
+        .value()
+
+        RSVP.all promises
+        .then (res)->
+            res.reduce (memo, r)->
+                memo.concat r
+            , []
+            .slice 0, pageSize
+
     wait: (flux, state)->
-        {store, action} = flux
-        new RSVP.Promise (resolve, reject)->
-            callback = ->
-                store.restaurantStore.removeChangeListener callback
-                do resolve
-            store.restaurantStore.addChangeListener callback
-            action.navPage state.params
+        {routes} = state
+        promises = routes.filter (r)->
+            r.handler.fetchData
+        .reduce (promises, route)->
+            promises.push route.handler.fetchData(flux, state)
+            promises
+        , []
+        RSVP.all promises
