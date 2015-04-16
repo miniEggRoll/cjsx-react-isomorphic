@@ -1,9 +1,21 @@
 React       = require 'react'
 Router      = require 'react-router'
+RSVP        = require 'rsvp'
 Restaurant  = require "#{__dirname}/Restaurant.cjsx"
 {getRestaurantByPage}    = require "#{__dirname}/../util/index.coffee"
 
 {Link} = Router
+
+fetchRestaurant = ({country, locale, flux, page})->
+    console.log page, flux.store.restaurantStore.checkPageLoaded page 
+    if 0 >= page or flux.store.restaurantStore.checkPageLoaded page 
+        new RSVP.Promise (resolve)->
+            resolve false
+    else 
+        getRestaurantByPage {page, country, locale}
+        .then (raws)->
+            flux.store.restaurantStore.addRestaurantsByPage raws, page
+            true
 
 keys = ['Our Restaurants']
 
@@ -12,9 +24,12 @@ Page = React.createClass {
         fetchData: (flux, state)->
             {locale} = flux
             {page, country} = state.params
-            getRestaurantByPage {page, country, locale}
-            .then (raws)->
-                flux.store.restaurantStore.addRestaurantsByPage raws, page
+            promise = fetchRestaurant {country, locale, flux, page}
+            RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
+                fetchRestaurant {country, locale, flux, page: p}
+            .then ->
+                flux.store.restaurantStore.cleanupRestaurant page
+            promise
 
     contextTypes: {
         router: React.PropTypes.func
