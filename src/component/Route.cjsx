@@ -1,11 +1,9 @@
 React   = require 'react'
 Router  = require 'react-router'
-
 Root    = require "#{__dirname}/Root.cjsx"
 List    = require "#{__dirname}/List.cjsx"
-Detail    = require "#{__dirname}/Detail.cjsx"
+Detail  = require "#{__dirname}/Detail.cjsx"
 RestaurantList    = require "#{__dirname}/RestaurantList.cjsx"
-
 {Route, Redirect} = Router
 
 routes = 
@@ -14,6 +12,7 @@ routes =
             <Route name="list" path="?:page?" handler={List} />
         </Route>
         <Route name="detail" path="restaurant/:id" handler={Detail} />
+        <Redirect to="list" params={{country: 'th'}} query={{locale: 'en_US'}} />
     </Route>
 
 module.exports = routes

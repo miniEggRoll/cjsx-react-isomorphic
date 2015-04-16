@@ -2,6 +2,7 @@ _           = require 'underscore'
 url         = require 'url'
 request     = require 'superagent'
 RSVP        = require 'rsvp'
+Router      = require 'react-router'
 
 pageSize = 8
 
@@ -61,3 +62,13 @@ module.exports =
             promises
         , []
         RSVP.all promises
+
+    routeHandler: ({routes, location})->
+        new RSVP.Promise (resolve, onError)->
+            onAbort = (options)->
+                resolve {router, options}
+            router = Router.create {routes, location, onAbort, onError}
+            router.run (Handler, state)->
+                state.params.page ?= 1
+                state.params.page = +state.params.page
+                resolve {Handler, state, router}

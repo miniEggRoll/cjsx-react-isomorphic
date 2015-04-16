@@ -1,8 +1,9 @@
 React       = require 'react'
 Router      = require 'react-router'
 Dispatcher  = require "#{__dirname}/../dispatcher"
-{routeHandler, wait} = require "#{__dirname}/../util"
-{Route} = require "#{__dirname}/../component"
+co          = require 'co'
+{Route}     = require "#{__dirname}/../component"
+{wait, routeHandler}      = require "#{__dirname}/../util"
 
 module.exports = ->
     (next)->
@@ -10,11 +11,17 @@ module.exports = ->
         flux = Dispatcher {locale}
 
         try
-            {Handler, state} = yield (done)=>
-                Router.run Route, @path, (Handler, state)->
-                    state.params.page ?= 1
-                    state.params.page = +state.params.page
-                    done null, {Handler, state}
+            {Handler, state, options, router} = yield routeHandler {
+                routes: Route
+                location: @path
+            }
+        catch e
+            console.log e.stack
+            throw e
+
+        return @redirect router.makePath(options.to, options.params, options.query) if options?
+        
+        try
             yield wait flux, state
         catch e
             console.log e.stack
