@@ -21,6 +21,7 @@ module.exports = ->
 
         return @redirect router.makePath(options.to, options.params, options.query) if options?
         
+        state._RUNTIME = 'nodejs'
         try
             yield wait flux, state
         catch e

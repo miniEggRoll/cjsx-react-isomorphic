@@ -7,7 +7,6 @@ Restaurant  = require "#{__dirname}/Restaurant.cjsx"
 {Link} = Router
 
 fetchRestaurant = ({country, locale, flux, page})->
-    console.log page, flux.store.restaurantStore.checkPageLoaded page 
     if 0 >= page or flux.store.restaurantStore.checkPageLoaded page 
         new RSVP.Promise (resolve)->
             resolve false
@@ -25,10 +24,11 @@ Page = React.createClass {
             {locale} = flux
             {page, country} = state.params
             promise = fetchRestaurant {country, locale, flux, page}
-            RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
-                fetchRestaurant {country, locale, flux, page: p}
-            .then ->
-                flux.store.restaurantStore.cleanupRestaurant page
+            unless state._RUNTIME is 'nodejs'
+                RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
+                    fetchRestaurant {country, locale, flux, page: p}
+                .then ->
+                    flux.store.restaurantStore.cleanupRestaurant page
             promise
 
     contextTypes: {
