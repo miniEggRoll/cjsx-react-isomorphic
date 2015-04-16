@@ -24,6 +24,9 @@ keys = [
     'Earn 1-3% rebate from every reservation made with EZTABLE APP!'
 ]
 
+back = ->
+    global.window.history.back()
+
 component = React.createClass {
     statics: 
         fetchData: (flux, state)->
@@ -43,32 +46,14 @@ component = React.createClass {
         {locale, store} = flux
 
         restaurant = store.restaurantStore.getRestaurant params.id
-        attrs = restaurant.cuisine_category.map (c)=>
-            store.attrStore.getAttr c
 
         dictionary = store.localeStore.translate keys, locale
 
-        cuisines = _.chain attrs
-        .where {category:'Cuisine Type'}
-        .pluck locale
-        .value()
-
-        purpose = _.chain attrs
-        .where {category:'Suitable Purpose'}
-        .pluck locale
-        .value()
-
-        service = _.filter {
-            is_accept_credit_card: 'Accept Credit Cards Payment'
-            has_parking: 'Parking Space'
-            has_wifi: 'Wi-Fi'
-        }, (str, key)-> 
-            restaurant[key]
-
-        {restaurant, cuisines, purpose, service, locale, dictionary}
+        {restaurant, locale, dictionary}
     render: ->
-        {restaurant, cuisines, purpose, service, locale, dictionary} = @state
+        {restaurant, locale, dictionary} = @state
         {
+            cuisine
             name
             images
             highlight
@@ -77,41 +62,40 @@ component = React.createClass {
             recommended_dishes
             url
             menu_url
-            min_price
-            max_price
+            price
             intro1
             opening_meta
-            is_accept_credit_card
-            is_wheelchair_accessible
-            has_parking
-            has_wifi
-            currency
+            services
+            id
+            promotions
         } = restaurant
 
-        priceRange = "#{min_price} ~ #{max_price} (#{currency})"
-        img = images.w240
-        service = service.join ', '
-        cuisines = cuisines.join ', '
-        purpose = purpose.join ', '
-        dishes = recommended_dishes.map (d)->
-            "- #{d}"
-        .join '</br>'
+        priceRange = price
+        service = services
+        opening = opening_meta
+        cuisines = cuisine.type
+        purpose = cuisine.suitable_purpose
+        dishes = cuisine.recommended_dishes
+        img = images.o
 
-        opening = _.map opening_meta, (arr, key)->
-            str = _.chain(arr)
-            .map ({days, start, end})->
-                "#{days}  #{start} - #{end}"
-            .unshift "[#{key}]"
-            .join '</br>'
-        .join '</br></br>'
+        {cash_rebate} = promotions
+        rebate_title = cash_rebate.content
+        rebate_info = cash_rebate.info
+
+        menu = if menu_url then <a href={menu_url||'#'} className="link">{dictionary['Read Menu']}</a> else dictionary['Read Menu']
+        website = if url then <a href={url} className="link">{dictionary['Visit Website']}</a> else dictionary['Visit Website']
 
         <div className="wrapper">
-            <div className="header"><a href="http://www.eztable.com" className="nav-link"><i className="fa fa-angle-left fa-2x nav-left-icon"></i>
-                <div className="icon-img"><img src="http://a4.mzstatic.com/us/r30/Purple3/v4/ea/0f/90/ea0f9016-46f0-ba7d-0f01-6d6447494ea7/icon175x175.jpeg" /></div>
-                <div className="nav-link-word">
-                    <div className="app-link-title">EZTABLE</div>
-                    <div className="app-link-subtitle">24hr Online Reservation</div>
-                </div></a><a href="http://www.eztable.com/app/?utm_source=seopage&amp;utm_campaign=hkseogrowth&amp;utm_medium=link&amp;tracktype=tapstream" className="install-button">Install</a>
+            <div className="header">
+                <a onClick={back} className="nav-link">
+                    <i className="fa fa-angle-left fa-2x nav-left-icon"></i>
+                    <div className="icon-img"><img src="http://a4.mzstatic.com/us/r30/Purple3/v4/ea/0f/90/ea0f9016-46f0-ba7d-0f01-6d6447494ea7/icon175x175.jpeg" /></div>
+                    <div className="nav-link-word">
+                        <div className="app-link-title">EZTABLE</div>
+                        <div className="app-link-subtitle">24hr Online Reservation</div>
+                    </div>
+                </a>
+                <a href="http://www.eztable.com/app/?utm_source=seopage&amp;utm_campaign=hkseogrowth&amp;utm_medium=link&amp;tracktype=tapstream" className="install-button">Install</a>
             </div>
             <section className="main-section">
                 <img src={img} className="restaurant-img" />
@@ -122,7 +106,7 @@ component = React.createClass {
                 <h2 className="title">{dictionary.Location}</h2>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary.Address}</div>
-                    <div className="content"><a href="http://www.eztable.com" className="link">{address}</a></div>
+                    <div className="content">{address}</div>
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary.Transportation}</div>
@@ -132,7 +116,8 @@ component = React.createClass {
             <section className="detail-section">
                 <h2 className="title">{dictionary.Promotion}</h2>
                 <div className="detail-item">
-                    <div className="content">{dictionary['Earn 1-3% rebate from every reservation made with EZTABLE APP!']}</div>
+                    <div className="subtitle">{rebate_title}</div>
+                    <div className="content">{rebate_info}</div>
                 </div>
             </section>
             <section className="detail-section">
@@ -151,7 +136,7 @@ component = React.createClass {
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary['Menu']}</div>
-                    <div className="content"><a href={menu_url||'#'} className="link">{dictionary['Read Menu']}</a></div>
+                    <div className="content">{menu}</div>
                 </div>
             </section>
             <section className="detail-section">
@@ -166,7 +151,7 @@ component = React.createClass {
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary.Service}</div>
-                    <div className="content">{dictionary.service}</div>
+                    <div className="content">{service}</div>
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary.Introduction}</div>
@@ -176,7 +161,7 @@ component = React.createClass {
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary.Website}</div>
-                    <div className="content"><a href={url} className="link">{dictionary['Visit Website']}</a></div>
+                    <div className="content">{website}</div>
                 </div>
             </section>
         </div>

@@ -6,6 +6,25 @@ util            = require "#{__dirname}/../util/index.coffee"
 
 CHANGE_EVENT = 'change'
 
+mapper = ({information, cuisine, meta, location, detail, promotions, id})->
+    {
+        cuisine: cuisine
+        name: information.name
+        images: information.images[0]
+        highlight: meta.highlight
+        address: location.address
+        transportation: location.transportation
+        recommended_dishes: cuisine.recommended_dishes
+        url: detail.url
+        menu_url: cuisine.menu
+        price: detail.price_range
+        intro1: detail.intro1
+        opening_meta: detail.opening_hours
+        services: detail.services
+        promotions: promotions
+        id: id
+    }
+
 class Store extends EventEmitter
     constructor: ()->
         @_restaurant = {}
@@ -25,11 +44,11 @@ class Store extends EventEmitter
         ids = @_pageDic[page]
         return ids? and _.every ids, (id)=> @_restaurant[id]?
     addRestaurant: (data)->
-        @_restaurant[data.id] = data
+        @_restaurant[data.id] = mapper data
     addRestaurantsByPage: (raw, page)->
         @_pageDic[page] = _.pluck raw, 'id'
         raw.forEach (r)=>
-            @_restaurant[r.id] = r
+            @_restaurant[r.id] = mapper r
     cleanupRestaurant: (page)->
         offset = 7
         previous = if page - offset > 0 then  @_pageDic.slice 0, page - offset else []

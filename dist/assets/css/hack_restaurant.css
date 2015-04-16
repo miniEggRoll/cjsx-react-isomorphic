@@ -44,6 +44,7 @@ a, a:link, a:hover, a:active, a:visited {
   display: block;
 }
 .header .nav-link {
+  cursor: pointer;
   display: inline-block;
   padding: 20px 0;
 }

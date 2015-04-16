@@ -4,7 +4,7 @@ Restaurant = React.createClass {
     render: ->
         {id, name, intro1, images} = @props
         href = "/restaurant/#{id}"
-        thumb = if images then images.w240 else ''
+        thumb = if images then images.o else ''
         <div className="col-sm-3">
             <a href={href} >
                 <div className="work wow fadeInUp">

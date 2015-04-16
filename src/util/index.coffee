@@ -11,47 +11,40 @@ module.exports =
         href = url.format 
             protocol: 'http'
             hostname: 'api.eztable.com'
-            pathname: '/v3/restaurants'
+            pathname: "/v3/app/eztable/restaurants/#{id}"
             query: 
-                fq: "id:#{id}"
+                full: 1
                 locale: locale
-                start: 0
 
         new RSVP.Promise (resolve, reject)->
             request
             .get href
             .end (err, res)->
-                if err? then reject err else resolve res.body.restaurants[0]
+                if err? then reject err else resolve res.body
 
     getRestaurantByPage: ({country, page, locale, filter})->
-        reqCount = Math.floor(pageSize/10) + 1
+        switch locale
+            when 'en_US' then _locale = ''
+            when 'zh_HK' then _locale = 'zh_TW'
+            else _locale = locale
+    
+        href = url.format 
+            protocol: 'http'
+            port: 8087
+            hostname: 'nodejs.eztable.com'
+            pathname: '/search/+'
+            query: 
+                country: country
+                full: 1
+                locale: _locale
+                start: (page-1)*pageSize
+                n: pageSize
 
-        promises = _.chain reqCount
-        .range()
-        .map (idx)->
-            start = (page-1)*pageSize + 10*idx
-            href = url.format 
-                protocol: 'http'
-                hostname: 'api.eztable.com'
-                pathname: '/v3/restaurants'
-                query: 
-                    fq: "country:#{country}"
-                    locale: locale
-                    start: start
-
-            new RSVP.Promise (resolve, reject)->
-                request
-                .get href
-                .end (err, res)->
-                    if err? then reject err else resolve res.body.restaurants
-        .value()
-
-        RSVP.all promises
-        .then (res)->
-            res.reduce (memo, r)->
-                memo.concat r
-            , []
-            .slice 0, pageSize
+        new RSVP.Promise (resolve, reject)->
+            request
+            .get href
+            .end (err, res)->
+                if err? then reject err else resolve res.body
 
     wait: (flux, state)->
         {routes} = state
