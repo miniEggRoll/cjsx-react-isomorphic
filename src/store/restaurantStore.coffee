@@ -23,6 +23,7 @@ mapper = ({information, cuisine, meta, location, detail, promotions, id})->
         services: detail.services
         promotions: promotions
         id: id
+        country: information.country
     }
 
 class Store extends EventEmitter

@@ -25,12 +25,23 @@ Page = React.createClass {
             {page, country} = state.params
             promise = fetchRestaurant {country, locale, flux, page}
             unless state._RUNTIME is 'nodejs'
-                RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
-                    fetchRestaurant {country, locale, flux, page: p}
-                .then ->
-                    flux.store.restaurantStore.cleanupRestaurant page
+                @track flux, state
+                @preload flux, state
             promise
-
+        track: (flux, state)->
+            global.analytics.track 'viewed_hack_seo_index_page', {
+                country: state.params.country
+                hostname:'restaurant.eztable.com'
+            }
+        preload: (flux, state)->
+            {locale} = flux
+            {page, country} = state.params
+            RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
+                fetchRestaurant {country, locale, flux, page: p}
+            .then ->
+                flux.store.restaurantStore.cleanupRestaurant page
+            .catch (err)->
+                console.error err
     contextTypes: {
         router: React.PropTypes.func
     }

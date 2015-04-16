@@ -33,8 +33,18 @@ component = React.createClass {
             {id} = state.params
             locale = flux.locale
             getRestaurantById {id, locale}
-            .then (data)->
+            .then (data)=>
                 flux.store.restaurantStore.addRestaurant data
+                @track flux, state unless state._RUNTIME is 'nodejs'
+        track: (flux, state)->
+            {id} = state.params
+            {name, country} = flux.store.restaurantStore.getRestaurant id
+            global.analytics.track 'viewed_hack_seo_restaurant_page', {
+                country: country
+                restaurant_name: name
+                restaurant_id: id
+                hostname: 'restaurant.eztable.com'
+            }
     _onChange: ->
         @setState @getInitialState()
     componentDidMount: ->
