@@ -21,6 +21,7 @@ keys = [
     'Website'
     'Visit Website'
     'Book Now'
+    'Earn 1-3% rebate from every reservation made with EZTABLE APP!'
 ]
 
 component = React.createClass {
@@ -79,16 +80,15 @@ component = React.createClass {
             min_price
             max_price
             intro1
-            promotion
-            promotion_title
             opening_meta
             is_accept_credit_card
             is_wheelchair_accessible
             has_parking
             has_wifi
+            currency
         } = restaurant
 
-        priceRange = "#{min_price} ~ #{max_price}"
+        priceRange = "#{min_price} ~ #{max_price} (#{currency})"
         img = images.w240
         service = service.join ', '
         cuisines = cuisines.join ', '
@@ -132,8 +132,7 @@ component = React.createClass {
             <section className="detail-section">
                 <h2 className="title">{dictionary.Promotion}</h2>
                 <div className="detail-item">
-                    <div className="subtitle">{promotion_title}</div>
-                    <div className="content">{promotion}</div>
+                    <div className="content">{dictionary['Earn 1-3% rebate from every reservation made with EZTABLE APP!']}</div>
                 </div>
             </section>
             <section className="detail-section">
@@ -152,7 +151,7 @@ component = React.createClass {
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary['Menu']}</div>
-                    <div className="content"><a href={menu_url} className="link">{dictionary['Read Menu']}</a></div>
+                    <div className="content"><a href={menu_url||'#'} className="link">{dictionary['Read Menu']}</a></div>
                 </div>
             </section>
             <section className="detail-section">

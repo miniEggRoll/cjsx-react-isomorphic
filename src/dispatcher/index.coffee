@@ -14,4 +14,5 @@ module.exports = ({locale})->
             localeStore: Store.localeStore dispatcher
             restaurantStore: Store.restaurantStore dispatcher
             attrStore: Store.attrStore dispatcher
+            countryStore: Store.countryStore dispatcher
     }
