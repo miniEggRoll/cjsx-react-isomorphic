@@ -4,8 +4,6 @@ request     = require 'superagent'
 RSVP        = require 'rsvp'
 Router      = require 'react-router'
 
-pageSize = 8
-
 module.exports = 
     getRestaurantById: ({id, locale})->
         href = url.format 
@@ -22,12 +20,7 @@ module.exports =
             .end (err, res)->
                 if err? then reject err else resolve res.body
 
-    getRestaurantByPage: ({country, page, locale, filter})->
-        switch locale
-            when 'en_US' then _locale = ''
-            when 'zh_HK' then _locale = 'zh_TW'
-            else _locale = locale
-    
+    getRestaurantByPage: ({country, page, locale, filter, pageSize})->
         href = url.format 
             protocol: 'http'
             port: 8087
@@ -36,7 +29,7 @@ module.exports =
             query: 
                 country: country
                 full: 1
-                locale: _locale
+                locale: locale
                 start: (page-1)*pageSize
                 n: pageSize
 
@@ -62,6 +55,7 @@ module.exports =
                 resolve {router, options}
             router = Router.create {routes, location, onAbort, onError}
             router.run (Handler, state)->
+                state.params.country = 'th' unless state.params.country in ['th', 'hk']
                 state.params.page ?= 1
                 state.params.page = +state.params.page
                 resolve {Handler, state, router}

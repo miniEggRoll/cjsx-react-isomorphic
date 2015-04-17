@@ -13,10 +13,10 @@ options =
 
 cache = LRU options
 
-module.exports = ->
+module.exports = (pageSize)->
     (next)->
-        {locale} = @
-        flux = Dispatcher {locale}
+        {locale, localeKey} = @localeSetting
+        flux = Dispatcher {locale, pageSize, localeKey}
         key = @path + locale
 
         unless cache.has key
@@ -39,7 +39,7 @@ module.exports = ->
                 throw e
 
             html = React.renderToStaticMarkup <Handler {...state} flux={flux} />
-            result = {html, routes: state.routes}
+            result = {html, pageSize, routes: state.routes, flux, state}
             cache.set key, result
         else 
             result = cache.get key

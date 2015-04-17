@@ -6,12 +6,12 @@ Restaurant  = require "#{__dirname}/Restaurant.cjsx"
 
 {Link} = Router
 
-fetchRestaurant = ({country, locale, flux, page})->
+fetchRestaurant = ({country, locale, flux, page, pageSize})->
     if 0 >= page or flux.store.restaurantStore.checkPageLoaded page 
         new RSVP.Promise (resolve)->
             resolve false
     else 
-        getRestaurantByPage {page, country, locale}
+        getRestaurantByPage {page, country, locale, pageSize}
         .then (raws)->
             flux.store.restaurantStore.addRestaurantsByPage raws, page
             true
@@ -21,9 +21,9 @@ keys = ['Our Restaurants']
 Page = React.createClass {
     statics: 
         fetchData: (flux, state)->
-            {locale} = flux
+            {pageSize, locale} = flux
             {page, country} = state.params
-            promise = fetchRestaurant {country, locale, flux, page}
+            promise = fetchRestaurant {country, locale, flux, page, pageSize}
             unless state._RUNTIME is 'nodejs'
                 @track flux, state
                 @preload flux, state
@@ -34,14 +34,20 @@ Page = React.createClass {
                 hostname:'restaurant.eztable.com'
             }
         preload: (flux, state)->
-            {locale} = flux
+            {pageSize, locale} = flux
             {page, country} = state.params
             RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
-                fetchRestaurant {country, locale, flux, page: p}
+                fetchRestaurant {country, locale, flux, page: p, pageSize}
             .then ->
                 flux.store.restaurantStore.cleanupRestaurant page
             .catch (err)->
                 console.error err
+        tkd: (flux, state)->
+            {
+                t: 'EZTABLE 24hr online restaurant reservation'
+                k: 'EZTABLE,App,restaurant,reservation'
+                d: 'EZTABLE App is your 24hr personal dining manager, you can reserve over 3,000 fine-dining restaurants in Asia! Over 6,000,000 diners seated through EZTABLE, and creating millions of wonderful dining experience.'
+            }
     contextTypes: {
         router: React.PropTypes.func
     }

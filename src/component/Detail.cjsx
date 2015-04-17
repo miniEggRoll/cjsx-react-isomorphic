@@ -45,6 +45,17 @@ component = React.createClass {
                 restaurant_id: id
                 hostname: 'restaurant.eztable.com'
             }
+        tkd: (flux, state)->
+            {id} = state.params
+            {name, country, cuisine, intro1} = flux.store.restaurantStore.getRestaurant id
+            cuisines = cuisine.type
+
+            {
+                t: "#{name} - EZTABLE 24hr online reservation"
+                k: "#{name}, #{cuisines}"
+                d: intro1
+            }
+
     _onChange: ->
         @setState @getInitialState()
     componentDidMount: ->
@@ -105,12 +116,12 @@ component = React.createClass {
                         <div className="app-link-subtitle">24hr Online Reservation</div>
                     </div>
                 </a>
-                <a href="http://www.eztable.com/app/?utm_source=seopage&amp;utm_campaign=hkseogrowth&amp;utm_medium=link&amp;tracktype=tapstream" className="install-button">Install</a>
+                <a href="http://www.eztable.com/app/?utm_source=seopage&utm_campaign=hkseogrowth&utm_medium=link&tracktype=tapstream" className="install-button">Install</a>
             </div>
             <section className="main-section">
                 <img src={img} className="restaurant-img" />
                 <h1 className="restaurant-name">{name}</h1>
-                <div className="restaurant-highlight">"{highlight}"</div><a href="http://www.eztable.com/app/?utm_source=seopage&amp;utm_campaign=hkseogrowth&amp;utm_medium=link&amp;tracktype=tapstream" className="booknow-button">{dictionary['Book Now']}</a>
+                <div className="restaurant-highlight">"{highlight}"</div><a href="http://www.eztable.com/app/?utm_source=seopage&utm_campaign=hkseogrowth&utm_medium=link&tracktype=tapstream" className="booknow-button">{dictionary['Book Now']}</a>
             </section>
             <section className="detail-section">
                 <h2 className="title">{dictionary.Location}</h2>

@@ -2,11 +2,13 @@ Action          = require "#{__dirname}/../action/index.coffee"
 Store           = require "#{__dirname}/../store/index.coffee"
 {Dispatcher}    = require 'flux'
 
-module.exports = ({locale})->
+module.exports = ({locale, pageSize, localeKey})->
     dispatcher = new Dispatcher()
 
     {
+        pageSize: pageSize
         locale: locale
+        localeKey: localeKey
         dispatcher: dispatcher
         action: Action dispatcher, locale
         store: 

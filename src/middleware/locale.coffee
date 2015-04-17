@@ -1,8 +1,8 @@
 _   = require 'underscore'
 
-module.exports = (key)->
+module.exports = (localeKey)->
     (next)->
-        selected = @query[key] or @cookies.get(key) or 'en_US'
-        @cookies.set key, selected
-        @locale = selected
+        locale = @query[localeKey] or @cookies.get(localeKey) or 'en_US'
+        @cookies.set localeKey, locale
+        @localeSetting = {localeKey, locale}
         yield next

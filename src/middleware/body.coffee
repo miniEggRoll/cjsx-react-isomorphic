@@ -9,8 +9,11 @@ render = (path, model)->
 
 module.exports = (segment)->
     (next)->
-        {style, locale} = @
-        {html} = @reactHTML
+        {style} = @
+        {html, pageSize} = @reactHTML
+        {locale, localeKey} = @localeSetting
+        {t, d, k} = @tkd or {}
+
         @throw 404 unless html?
-        @body = yield render "#{__dirname}/../index.mustache", {html, locale, style, segment}
+        @body = yield render "#{__dirname}/../index.mustache", {html, locale, style, segment, pageSize, localeKey, t, d, k}
         yield next

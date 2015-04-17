@@ -19,29 +19,28 @@ Root = React.createClass {
         @props.flux.store.countryStore.removeChangeListener @_onChange
     getInitialState: ->
         {flux, params} = @props
-        country = flux.store.countryStore.getAll()
+        {store, localeKey} = flux
 
+        country = store.countryStore.getAll()
         lang = country.filter(({key})-> 
             key is params.country
         )[0].locale
         .map (locale)->
             {locale}
 
-        apps = flux.store.appStore.getAll()
-        {lang, apps, country}
+        apps = store.appStore.getAll()
+        {lang, apps, country, localeKey, currentCountry: params.country}
     render: ->
-        {lang, apps, country} = @state
+        {lang, apps, country, localeKey, currentCountry} = @state
 
         lang = lang.map ({locale})=>
-            href = "?locale=#{locale}"
+            href = "?#{localeKey}=#{locale}"
             <li key={locale} ><a href={href} >{locale}</a></li>
         country = country.map ({key, en_US})=>
-            href = @context.router.makePath 'country', {country: key}, {locale: 'en_US'}
+            href = @context.router.makePath 'country', {country: key}, {_locale: 'en_US'}
             <li key={key} ><a href={href} >{en_US}</a></li>
 
-        gohome = =>
-            @context.router.transitionTo '/'
-            @props.flux.action.route()
+        homeHref = @context.router.makePath 'country', {country: currentCountry}
 
         <div className="restaurantList" >
             <nav className="navbar" role="navigation">
@@ -53,7 +52,7 @@ Root = React.createClass {
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                         </button>
-                        <Link className="navbar-brand" to='/' onClick={gohome} >EZTABLE</Link>
+                        <a className="navbar-brand" href={homeHref} >EZTABLE</a>
                     </div>
                     <div className="collapse navbar-collapse" id="top-navbar-1">
                         <ul className="nav navbar-nav navbar-right">
