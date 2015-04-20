@@ -60,17 +60,18 @@ Page = React.createClass {
     getInitialState: ->
         {params, flux} = @props
         {page, country} = params
+        {locale} = flux
         dictionary = flux.store.localeStore.translate keys, flux.locale
 
         restInfo = flux.store.restaurantStore.getAllForPage page, country
-        nextPage = {country, page: page + 1}
-        prevPage = {country, page: page - 1}
+        nextPage = {locale, country, page: page + 1}
+        prevPage = {locale, country, page: page - 1}
 
-        {nextPage, prevPage, restInfo, dictionary}
+        {nextPage, prevPage, restInfo, dictionary, locale}
     render: ->
-        {nextPage, prevPage, restInfo, dictionary} = @state
+        {nextPage, prevPage, restInfo, dictionary, locale} = @state
         restInfo = restInfo.map (r)->
-            <Restaurant key={r.id} {...r} />
+            <Restaurant key={r.id} {...r} locale={locale} />
 
         nav = [prevPage, nextPage].map (params, idx)=>
             return if idx is 0 and params.page is 0
@@ -81,7 +82,6 @@ Page = React.createClass {
             delegate = =>
                 @context.router.transitionTo href
                 @props.flux.action.route()
-
             <li key={href} ><Link to={to} params={params} onClick={delegate} ><span aria-hidden="true" dangerouslySetInnerHTML={{__html: arrow}}></span></Link></li>
 
         <div>

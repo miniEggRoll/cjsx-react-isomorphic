@@ -1,9 +1,12 @@
 React           = require 'react'
 
 Restaurant = React.createClass {
+    contextTypes: {
+        router: React.PropTypes.func
+    }
     render: ->
-        {id, name, intro1, images} = @props
-        href = "/restaurant/#{id}"
+        {id, name, intro1, images, locale} = @props
+        href = @context.router.makePath 'detail', {locale, id}
         thumb = if images then images.o else ''
         <div className="col-sm-3">
             <a href={href} >

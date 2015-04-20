@@ -9,7 +9,7 @@ Dispatcher      = require "#{__dirname}/dispatcher/index.coffee"
 wrapper = document.getElementById 'wrapper'
 {locale} = global
 
-flux = Dispatcher {locale, pageSize, localeKey}
+flux = Dispatcher {locale, pageSize}
 flux.dispatcher.register (action)->
     switch action.type
         when ActionType.ROUTE

@@ -8,20 +8,17 @@ RestaurantList    = require "#{__dirname}/RestaurantList.cjsx"
 {Route, Redirect} = Router
 
 routes = do ->
-    localeKey = '_locale'
     locale = 'en_US'
     country = 'th'
-    
-    defautlQuery = {}
-    defautlQuery[localeKey] = locale
-    defautlParam = {country}
+
+    defautlParam = {country, locale}
     
     <Route name="root" path="/" handler={Root} >
-        <Route name="country" path="country/:country" handler={RestaurantList} >
+        <Route name="country" path="country/:country/locale/:locale" handler={RestaurantList} >
             <Route name="list" path="?:page?" handler={List} />
         </Route>
-        <Route name="detail" path="restaurant/:id" handler={Detail} />
-        <Redirect to="list" params={defautlParam} query={defautlQuery} />
+        <Route name="detail" path="restaurant/:id/?:locale?" handler={Detail} />
+        <Redirect to="list" params={defautlParam} />
     </Route>
 
 module.exports = routes

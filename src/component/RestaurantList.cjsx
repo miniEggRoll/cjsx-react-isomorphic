@@ -19,7 +19,7 @@ Root = React.createClass {
         @props.flux.store.countryStore.removeChangeListener @_onChange
     getInitialState: ->
         {flux, params} = @props
-        {store, localeKey} = flux
+        {locale, store} = flux
 
         country = store.countryStore.getAll()
         lang = country.filter(({key})-> 
@@ -29,18 +29,17 @@ Root = React.createClass {
             {locale}
 
         apps = store.appStore.getAll()
-        {lang, apps, country, localeKey, currentCountry: params.country}
+        {lang, apps, country, currentCountry: params.country, locale}
     render: ->
-        {lang, apps, country, localeKey, currentCountry} = @state
-
+        {lang, apps, country, currentCountry, locale} = @state
         lang = lang.map ({locale})=>
-            href = "?#{localeKey}=#{locale}"
+            href = @context.router.makePath 'country', {locale, country: currentCountry}
             <li key={locale} ><a href={href} >{locale}</a></li>
         country = country.map ({key, en_US})=>
-            href = @context.router.makePath 'country', {country: key}, {_locale: 'en_US'}
+            href = @context.router.makePath 'country', {country: key, locale: 'en_US'}
             <li key={key} ><a href={href} >{en_US}</a></li>
 
-        homeHref = @context.router.makePath 'country', {country: currentCountry}
+        homeHref = @context.router.makePath 'country', {country: currentCountry, locale}
 
         <div className="restaurantList" >
             <nav className="navbar" role="navigation">

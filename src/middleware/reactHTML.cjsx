@@ -6,18 +6,14 @@ co          = require 'co'
 {Route}     = require "#{__dirname}/../component"
 {wait, routeHandler}      = require "#{__dirname}/../util"
 
-options = 
-    max: 2000
-    maxAge: 1000*60*60
-    length: (n)-> n.length
+length = (n)-> 
+    n.length
 
-cache = LRU options
+module.exports = (pageSize, max, maxAge)->
+    cache = LRU {max, maxAge, length}
 
-module.exports = (pageSize)->
     (next)->
-        {locale, localeKey} = @localeSetting
-        flux = Dispatcher {locale, pageSize, localeKey}
-        key = @path + locale
+        key = @path
 
         unless cache.has key
             try
@@ -26,16 +22,17 @@ module.exports = (pageSize)->
                     location: @path
                 }
             catch e
-                console.log e.stack
                 throw e
 
             return @redirect router.makePath(options.to, options.params, options.query) if options?
             
             state._RUNTIME = 'nodejs'
+            {locale} = state.params
+            flux = Dispatcher {locale, pageSize}
+
             try
                 yield wait flux, state
             catch e
-                console.log e.stack
                 throw e
 
             html = React.renderToStaticMarkup <Handler {...state} flux={flux} />
@@ -43,6 +40,8 @@ module.exports = (pageSize)->
             cache.set key, result
         else 
             result = cache.get key
+            {locale} = result.flux
 
+        @localeSetting = {locale}
         @reactHTML = result
         yield next
