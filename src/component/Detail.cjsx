@@ -153,7 +153,7 @@ component = React.createClass {
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary['Recommended Dishes']}</div>
-                    <div className="content" dangerouslySetInnerHTML={__html: dishes}></div>
+                    <div className="content" >{dishes}</div>
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary['Menu']}</div>
@@ -168,7 +168,7 @@ component = React.createClass {
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary['Open Hour']}</div>
-                    <div className="content" dangerouslySetInnerHTML={__html:opening} ></div>
+                    <div className="content" >{opening}</div>
                 </div>
                 <div className="detail-item">
                     <div className="subtitle">{dictionary.Service}</div>
