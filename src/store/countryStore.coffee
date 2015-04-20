@@ -25,15 +25,21 @@ module.exports = (dispatcher)->
     store.addCountry countries
     store
 
+localeName =
+    en_US: 'English'
+    th_TH: 'ภาษาไทย'
+    zh_HK: '中文'
+
 countries = [
     {
         key: 'th'
-        locale: ['en_US', 'th_TH']
+        locale: ['en_US', 'th_TH'].map (l)-> localeName[l]
         en_US: 'Thailand'
     }
     {
         key: 'hk'
-        locale: ['en_US', 'zh_HK']
+        locale: ['en_US', 'zh_HK'].map (l)-> localeName[l]
         en_US: 'Hong Kong'
+        name: '中文'
     }
 ]
