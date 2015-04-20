@@ -24,19 +24,19 @@ Page = React.createClass {
             {pageSize, locale} = flux
             {page, country} = state.params
             promise = fetchRestaurant {country, locale, flux, page, pageSize}
-            unless state._RUNTIME is 'nodejs'
-                @track flux, state
-                @preload flux, state
+            @preload flux, state
+            @track flux, state
             promise
         track: (flux, state)->
-            global.analytics.track 'viewed_hack_seo_index_page', {
+            global.analytics?.track 'viewed_hack_seo_index_page', {
                 country: state.params.country
                 hostname:'restaurant.eztable.com'
             }
         preload: (flux, state)->
-            {pageSize, locale} = flux
+            {pageSize, locale, preloadOffset} = flux
             {page, country} = state.params
-            RSVP.all [page-5..page-1].concat([page+1..page+5]).map (p)->
+            
+            RSVP.all [page-preloadOffset..page-1].concat([page+1..page+preloadOffset]).map (p)->
                 fetchRestaurant {country, locale, flux, page: p, pageSize}
             .then ->
                 flux.store.restaurantStore.cleanupRestaurant page

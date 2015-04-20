@@ -35,11 +35,11 @@ component = React.createClass {
             getRestaurantById {id, locale}
             .then (data)=>
                 flux.store.restaurantStore.addRestaurant data
-                @track flux, state unless state._RUNTIME is 'nodejs'
+                @track flux, state
         track: (flux, state)->
             {id} = state.params
             {name, country} = flux.store.restaurantStore.getRestaurant id
-            global.analytics.track 'viewed_hack_seo_restaurant_page', {
+            global.analytics?.track 'viewed_hack_seo_restaurant_page', {
                 country: country
                 restaurant_name: name
                 restaurant_id: id

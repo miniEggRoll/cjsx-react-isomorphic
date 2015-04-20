@@ -27,7 +27,7 @@ mapper = ({information, cuisine, meta, location, detail, promotions, id})->
     }
 
 class Store extends EventEmitter
-    constructor: ()->
+    constructor: (@preloadOffset)->
         @_restaurant = {}
         @_pageDic = []
     emitChange: ->
@@ -51,14 +51,14 @@ class Store extends EventEmitter
         raw.forEach (r)=>
             @_restaurant[r.id] = mapper r
     cleanupRestaurant: (page)->
-        offset = 7
-        previous = if page - offset > 0 then  @_pageDic.slice 0, page - offset else []
-        after = @_pageDic.slice page + offset
+        {preloadOffset} = @
+        previous = if page - preloadOffset > 0 then  @_pageDic.slice 0, page - preloadOffset else []
+        after = @_pageDic.slice page + preloadOffset + 1
 
         _.chain previous.concat after
         .flatten()
         .each (id)=> delete @_restaurant[id]
 
-module.exports = (dispatcher)->
-    store = new Store()
+module.exports = (dispatcher, preloadOffset)->
+    store = new Store(preloadOffset)
     store

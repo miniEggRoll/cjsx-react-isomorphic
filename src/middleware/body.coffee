@@ -7,7 +7,7 @@ render = (path, model)->
         fs.readFile path, {encoding: 'utf8'}, (err, index)->
             if err? then done err else done null, Mustache.render(index, model)
 
-module.exports = (segment)->
+module.exports = (segment, preloadOffset)->
     (next)->
         {style} = @
         {html, pageSize} = @reactHTML
@@ -16,5 +16,5 @@ module.exports = (segment)->
         {t, d, k} = @tkd or {}
 
         @throw 404 unless html?
-        @body = yield render "#{__dirname}/../index.mustache", {html, locale, style, segment, pageSize, t, d, k}
+        @body = yield render "#{__dirname}/../index.mustache", {html, locale, style, segment, pageSize, preloadOffset, t, d, k}
         yield next

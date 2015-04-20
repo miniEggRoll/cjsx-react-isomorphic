@@ -26,9 +26,8 @@ module.exports = (pageSize, max, maxAge)->
 
             return @redirect router.makePath(options.to, options.params, options.query) if options?
             
-            state._RUNTIME = 'nodejs'
             {locale} = state.params
-            flux = Dispatcher {locale, pageSize}
+            flux = Dispatcher {locale, pageSize, preloadOffset: 0}
 
             try
                 yield wait flux, state
