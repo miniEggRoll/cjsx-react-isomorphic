@@ -6,10 +6,12 @@ RUN mkdir /nodejs && curl http://nodejs.org/dist/v0.11.16/node-v0.11.16-linux-x6
 ENV PATH $PATH:/nodejs/bin
 
 WORKDIR /app
+COPY webpack.config.js package.json index.js /app/
+RUN npm install 
+
 COPY dist/ /app/dist/
 COPY src/ /app/src/
-COPY webpack.config.js package.json index.js /app/
-RUN npm install && npm run build
+RUN npm run build
 
 ENV PORT 8080
 EXPOSE 8080
