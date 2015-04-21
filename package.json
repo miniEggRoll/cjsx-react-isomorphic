@@ -36,6 +36,7 @@
     "coffee-jsx-loader": "^0.1.0",
     "coffee-loader": "^0.7.2",
     "css-loader": "^0.9.1",
+    "js2xmlparser": "^0.1.9",
     "jsdom": "^4.1.0",
     "mocha": "^2.2.1",
     "style-loader": "^0.9.0",
