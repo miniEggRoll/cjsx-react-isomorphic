@@ -1,3 +1,4 @@
+_           = require 'underscore'
 React       = require 'react'
 Router      = require 'react-router'
 RSVP        = require 'rsvp'
@@ -35,8 +36,8 @@ Page = React.createClass {
         preload: (flux, state)->
             {pageSize, locale, preloadOffset} = flux
             {page, country} = state.params
-            
-            RSVP.all [page-preloadOffset..page-1].concat([page+1..page+preloadOffset]).map (p)->
+
+            RSVP.all _.range(page-preloadOffset-1, page-1).concat(_.range(page+1, page+preloadOffset+1)).map (p)->
                 fetchRestaurant {country, locale, flux, page: p, pageSize}
             .then ->
                 flux.store.restaurantStore.cleanupRestaurant page
