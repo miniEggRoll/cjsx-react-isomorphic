@@ -30,16 +30,19 @@ localeName =
     th_TH: 'ภาษาไทย'
     zh_HK: '中文'
 
+mapper = (locale)-> 
+    name = localeName[locale]
+    {locale, name}
+
 countries = [
     {
         key: 'th'
-        locale: ['en_US', 'th_TH'].map (l)-> localeName[l]
+        locale: ['en_US', 'th_TH'].map mapper
         en_US: 'Thailand'
     }
     {
         key: 'hk'
-        locale: ['en_US', 'zh_HK'].map (l)-> localeName[l]
+        locale: ['en_US', 'zh_HK'].map mapper
         en_US: 'Hong Kong'
-        name: '中文'
     }
 ]

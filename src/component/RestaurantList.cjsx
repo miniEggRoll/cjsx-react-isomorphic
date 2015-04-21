@@ -25,16 +25,14 @@ Root = React.createClass {
         lang = country.filter(({key})-> 
             key is params.country
         )[0].locale
-        .map (locale)->
-            {locale}
 
         apps = store.appStore.getAll()
         {lang, apps, country, currentCountry: params.country, locale}
     render: ->
         {lang, apps, country, currentCountry, locale} = @state
-        lang = lang.map ({locale})=>
+        lang = lang.map ({locale, name})=>
             href = @context.router.makePath 'country', {locale, country: currentCountry}
-            <li key={locale} ><a href={href} >{locale}</a></li>
+            <li key={locale} ><a href={href} >{name}</a></li>
         country = country.map ({key, en_US})=>
             href = @context.router.makePath 'country', {country: key, locale: 'en_US'}
             <li key={key} ><a href={href} >{en_US}</a></li>
