@@ -2,7 +2,6 @@ React       = require 'react'
 Router      = require 'react-router'
 Dispatcher  = require "#{__dirname}/../dispatcher"
 LRU         = require 'lru-cache'
-co          = require 'co'
 {Route}     = require "#{__dirname}/../component"
 {wait, routeHandler}      = require "#{__dirname}/../util"
 
