@@ -329,7 +329,7 @@ ul.navbar-nav li.active .dropdown-menu > .active > a:focus { background: #9d426b
     background: url(../img/line.png) left center repeat-x;
 }
 
-.work-title h2 {
+.work-title h1 {
     width: 220px;
     margin: 0 auto;
     background: #fff;
@@ -360,7 +360,7 @@ ul.navbar-nav li.active .dropdown-menu > .active > a:focus { background: #9d426b
     margin-top: 15px;
 }
 
-.work h3 {
+.work h2 {
     padding-left: 15px;
     padding-right: 15px;
     font-family: 'Droid Sans', sans-serif;

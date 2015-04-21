@@ -14,7 +14,7 @@ Restaurant = React.createClass {
                     <div className="thumb" >
                         <img src={thumb} />
                     </div>
-                    <h3 title={name} >{{name}}</h3>
+                    <h2 title={name} >{{name}}</h2>
                     <p title={intro1} >{{intro1}}</p>
                     <div className="work-bottom"></div>
                 </div>

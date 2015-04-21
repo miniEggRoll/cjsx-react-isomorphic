@@ -88,7 +88,7 @@ Page = React.createClass {
         <div>
             <div className="row">
                 <div className="col-sm-12 work-title wow fadeIn">
-                    <h2>{dictionary['Our Restaurants']}</h2>
+                    <h1>{dictionary['Our Restaurants']}</h1>
                 </div>
             </div>
             <div className="row">
