@@ -24,6 +24,12 @@ keys = [
     'Earn 1-3% rebate from every reservation made with EZTABLE APP!'
 ]
 
+defaultRestaurant =
+    cuisine: {}
+    images: {}
+    promotions: 
+        cash_rebate:{}
+
 back = ->
     global.window.history.back()
 
@@ -38,7 +44,8 @@ component = React.createClass {
                 @track flux, state
         track: (flux, state)->
             {id} = state.params
-            {name, country} = flux.store.restaurantStore.getRestaurant id
+            restaurant = flux.store.restaurantStore.getRestaurant(id) or defaultRestaurant
+            {name, country} = restaurant
             global.analytics?.track 'viewed_hack_seo_restaurant_page', {
                 country: country
                 restaurant_name: name
@@ -47,7 +54,8 @@ component = React.createClass {
             }
         tkd: (flux, state)->
             {id} = state.params
-            {name, country, cuisine, intro1} = flux.store.restaurantStore.getRestaurant id
+            restaurant = flux.store.restaurantStore.getRestaurant(id) or defaultRestaurant
+            {name, country, cuisine, intro1} = restaurant
             cuisines = cuisine.type
 
             {
@@ -66,7 +74,7 @@ component = React.createClass {
         {flux, params} = @props
         {locale, store} = flux
 
-        restaurant = store.restaurantStore.getRestaurant params.id
+        restaurant = store.restaurantStore.getRestaurant(params.id) or defaultRestaurant
 
         dictionary = store.localeStore.translate keys, locale
 
@@ -94,6 +102,7 @@ component = React.createClass {
         priceRange = price
         service = services
         opening = opening_meta
+
         cuisines = cuisine.type
         purpose = cuisine.suitable_purpose
         dishes = cuisine.recommended_dishes
