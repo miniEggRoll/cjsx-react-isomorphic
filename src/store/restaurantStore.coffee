@@ -39,7 +39,7 @@ class Store extends EventEmitter
     getRestaurant: (id)->
         @_restaurant[id]
     getAllForPage: (page)->
-        @_pageDic[page].map (id)=>
+        (@_pageDic[page] or []).map (id)=>
             @_restaurant[id]
     checkPageLoaded: (page)->
         ids = @_pageDic[page]

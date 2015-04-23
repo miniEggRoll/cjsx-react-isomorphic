@@ -31,7 +31,7 @@ module.exports = (pageSize, max, maxAge)->
             try
                 yield wait flux, state
             catch e
-                throw e
+                console.error new Error('problem when fetching data')
 
             html = React.renderToStaticMarkup <Handler {...state} flux={flux} />
             result = {html, pageSize, routes: state.routes, flux, state}
