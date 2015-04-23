@@ -24,8 +24,7 @@ app.use (next)->
     try
         yield next
     catch e
-        console.error e.stack
-        @redirect '/'
+        @throw 500, e
 
 app.use (next)->
     yield next
